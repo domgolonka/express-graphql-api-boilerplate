@@ -1,0 +1,27 @@
+{
+  "name": "express-graphql-api-boilerplate",
+  "version": "0.0.1",
+  "description": "A boilerplate to kickstart a GraphQL API base on apollostack",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/denneulin/express-graphql-api-boilerplate.git"
+  },
+  "keywords": [
+    "express",
+    "graphql",
+    "api",
+    "boilerplate",
+    "apollostack",
+    "es6"
+  ],
+  "author": "Anthony Denneulin <a.denneulin@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/denneulin/express-graphql-api-boilerplate/issues"
+  },
+  "homepage": "https://github.com/denneulin/express-graphql-api-boilerplate#readme"
+}
