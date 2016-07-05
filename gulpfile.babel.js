@@ -55,6 +55,9 @@ gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
     ext: 'js',
     ignore: ['node_modules/**/*.js', 'dist/**/*.js'],
     tasks: ['lint', 'copy', 'babel'],
+    env: {
+      NODE_ENV: 'development'
+    }
   })
 );
 

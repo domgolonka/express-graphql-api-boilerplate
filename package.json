@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "gulp lint",
     "start": "gulp serve",
+    "start:d": "DEBUG=express-graphql-api-boilerplate:* gulp serve",
     "test": "test"
   },
   "repository": {
@@ -29,6 +30,7 @@
   "homepage": "https://github.com/denneulin/express-graphql-api-boilerplate#readme",
   "dependencies": {
     "apollo-server": "^0.1.5",
+    "debug": "^2.2.0",
     "express": "^4.14.0",
     "graphql": "^0.6.0",
     "lodash": "^4.13.1",

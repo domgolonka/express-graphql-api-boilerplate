@@ -1,10 +1,10 @@
+const debug = require('debug')('express-graphql-api-boilerplate:api/index');
 import express from 'express';
 import { apolloServer } from 'apollo-server';
 // import { schema, resolvers } from './schema';
 import Schema from './schema';
 import Resolvers from './resolvers';
 import connectors from './connectors';
-
 
 const graphQLServer = express();
 const GRAPHQL_PORT = 8080;
@@ -20,6 +20,5 @@ graphQLServer.use('/graphql', apolloServer(request => ({
 })));
 
 graphQLServer.listen(GRAPHQL_PORT, () => {
-  // eslint-disable-next-line
-  console.log(`GraphQL Server is now running on http://localhost:${GRAPHQL_PORT}/graphql`)
+  debug(`GraphQL Server is now running on http://localhost:${GRAPHQL_PORT}/graphql`)
 });
