@@ -1,0 +1,18 @@
+{
+  api: {
+    port: 8080
+  },
+  sequelize: {
+    database: 'dbname',
+    username: '',
+    password: '',
+    host: '',
+    dialect: 'sqlite',
+    storage: 'db.sqlite',
+    pool: {
+      max: 5,
+      min: 0,
+      idle: 10000
+    }
+  }
+}

@@ -1,12 +1,18 @@
+import config from 'config';
+import path from 'path';
 import Sequelize from 'sequelize';
 import casual from 'casual';
 import _ from 'lodash';
 
 
-const db = new Sequelize('blog', null, null, {
-  dialect: 'sqlite',
-  storage: './blog.sqlite',
-});
+const { database, username, password, host, dialect, storage, pool } = config.get('sequelize');
+
+const opts = { host, dialect, pool };
+if (dialect === 'sqlite') {
+  opts.storage = path.resolve(__dirname, storage);
+}
+
+const db = new Sequelize(database, username, password, opts);
 
 const AuthorModel = db.define('author', {
   firstName: { type: Sequelize.STRING },
