@@ -31,7 +31,7 @@ gulp.task('babel', () =>
 // Lint Javascript
 gulp.task('lint', () =>
   gulp.src(paths.js)
-    .pipe(plugins.eslint({ fix: true }))
+    .pipe(plugins.eslint())
     .pipe(plugins.eslint.format())
 );
 
@@ -46,8 +46,8 @@ gulp.task('dev:setup', ['clean', 'clean:db'], () => {
   return gulp.src('fixtures/**/*', { read: false })
     .pipe(plugins.sequelizeTestSetup({
       sequelize: models.sequelize,
-      models: models,
-      migrationsPath: 'migrations'
+      models,
+      migrationsPath: 'migrations',
     }));
 });
 
@@ -59,8 +59,8 @@ gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
     ignore: ['node_modules/**/*.js', 'dist/**/*.js'],
     tasks: ['lint', 'copy', 'babel'],
     env: {
-      NODE_ENV: 'development'
-    }
+      NODE_ENV: 'development',
+    },
   })
 );
 

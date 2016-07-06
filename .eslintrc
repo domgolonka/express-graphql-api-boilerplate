@@ -7,8 +7,12 @@
     "eslint:recommended",
     "airbnb/base"
   ],
-  "parserOptions": {
+  "ecmaFeatures": {
     "sourceType": "module"
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": false
   },
   "rules": {
     "arrow-body-style": 0

@@ -36,14 +36,14 @@ schema {
 const rootResolvers = {
   Query: {
     author(_, args, ctx) {
-      return ctx.Authors.find({where: args});
+      return ctx.Authors.find({ where: args });
     },
     authors(_, args, ctx) {
       return ctx.Authors.findAll(args);
     },
     fortuneCookie(_, args, ctx) {
       return ctx.Fortunes.getOne(args);
-    }
+    },
   },
   Mutation: {
     createAuthor: (root, args, ctx) => {
