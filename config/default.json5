@@ -1,14 +1,16 @@
 {
   api: {
-    port: 8080
+    port: 8080,
+    graphiql: true,
+    pretty: true
   },
   sequelize: {
-    database: 'dbname',
+    database: 'database_development',
     username: '',
     password: '',
-    host: '',
+    host: 'localhost',
     dialect: 'sqlite',
-    storage: 'db.sqlite',
+    storage: 'db_dev.sqlite',
     pool: {
       max: 5,
       min: 0,

@@ -5,14 +5,10 @@
   },
   "extends": [
     "eslint:recommended",
-     "airbnb/base"
+    "airbnb/base"
   ],
-  "ecmaFeatures": {
-    "sourceType": "module"
-  },
   "parserOptions": {
-    "sourceType": "module",
-    "allowImportExportEverywhere": false
+    "sourceType": "module"
   },
   "rules": {
     "arrow-body-style": 0

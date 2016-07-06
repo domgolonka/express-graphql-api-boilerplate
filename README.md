@@ -25,15 +25,16 @@ gulp
 ```
 
 ## TODO
-handle environment config
+add [eslint-plugin-graphql](https://github.com/apollostack/eslint-plugin-graphql)
+add typescript
 add https://github.com/commitizen/cz-cli and https://github.com/commitizen/cz-conventional-changelog
+add husky ?
 add security
     jwt
-    husky
     helmet
     nsp
-add DEBUG
-add Winston or [Bunyan](https://www.npmjs.com/package/gulp-nodemon#bunyan-logger-integration)
+add logging with Winston or [Bunyan](https://www.npmjs.com/package/gulp-nodemon#bunyan-logger-integration)
+add tests with code coverage
 
 ## Credits
 Heavily inspired by [KunalKapadia boilerplate](https://github.com/KunalKapadia/express-mongoose-es6-rest-api/) 

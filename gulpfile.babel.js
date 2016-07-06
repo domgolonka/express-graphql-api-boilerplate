@@ -3,13 +3,14 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import path from 'path';
 import del from 'del';
 import runSequence from 'run-sequence';
+import models from './models';
 
 const plugins = gulpLoadPlugins();
 
 const paths = {
   js: ['./**/*.js', '!dist/**', '!node_modules/**', '!coverage/**'],
   nonJs: ['./package.json', './.gitignore'],
-  tests: './server/tests/*.js',
+  tests: './tests/*.js',
 };
 
 // Compile ES6 to ES5 and copy to dist
@@ -29,16 +30,9 @@ gulp.task('babel', () =>
 
 // Lint Javascript
 gulp.task('lint', () =>
-    gulp.src(paths.js)
-      // eslint() attaches the lint output to the "eslint" property
-      // of the file object so it can be used by other modules.
-      .pipe(plugins.eslint({ fix: true }))
-      // eslint.format() outputs the lint results to the console.
-      // Alternatively use eslint.formatEach() (see Docs).
-      .pipe(plugins.eslint.format())
-      // To have the process exit with an error code (1) on
-      // lint error, return the stream and pipe to failAfterError last.
-      // .pipe(plugins.eslint.failAfterError())
+  gulp.src(paths.js)
+    .pipe(plugins.eslint({ fix: true }))
+    .pipe(plugins.eslint.format())
 );
 
 // Copy non-js files to dist
@@ -47,6 +41,15 @@ gulp.task('copy', () =>
     .pipe(plugins.newer('dist'))
     .pipe(gulp.dest('dist'))
 );
+
+gulp.task('dev:setup', ['clean', 'clean:db'], () => {
+  return gulp.src('fixtures/**/*', { read: false })
+    .pipe(plugins.sequelizeTestSetup({
+      sequelize: models.sequelize,
+      models: models,
+      migrationsPath: 'migrations'
+    }));
+});
 
 // Start server with restart on file changes
 gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
@@ -64,6 +67,9 @@ gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
 // Clean up dist and coverage directory
 gulp.task('clean', () =>
   del(['dist/**', 'coverage/**', '!dist', '!coverage'])
+);
+gulp.task('clean:db', () =>
+  del(['*.sqlite'])
 );
 
 // gulp serve for development
