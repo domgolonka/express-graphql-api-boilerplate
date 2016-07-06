@@ -1,9 +1,10 @@
 {
   "name": "express-graphql-api-boilerplate",
   "version": "0.0.1",
-  "description": "A boilerplate to kickstart a GraphQL API base on apollostack",
+  "description": "A boilerplate to kickstart a GraphQL API based on apollostack and express",
   "main": "api/index.js",
   "scripts": {
+    "dev:setup": "gulp dev:setup",
     "lint": "gulp lint",
     "start": "gulp serve",
     "start:d": "DEBUG=express-graphql-api-boilerplate:* gulp serve",
