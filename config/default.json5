@@ -4,6 +4,7 @@
     graphiql: true,
     pretty: true
   },
+  env: "development",
   sequelize: {
     database: 'database_development',
     username: '',

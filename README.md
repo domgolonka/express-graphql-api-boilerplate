@@ -26,7 +26,16 @@ npm start
 # then open http://localhost:8080/graphql
 ```
 
-Other gulp tasks:
+Start test:
+```sh
+# without coverage
+npm test
+
+# with coverage
+npm run test:cov
+```
+
+Other gulp tasks (need gulp globally installed):
 ```sh
 # Wipe out dist and coverage directory
 gulp clean
@@ -48,10 +57,10 @@ gulp
 ```
 
 ## TODO
-+ add tests with code coverage
 + add CONTRIBUTING.md
 + add security : jwt helmet nsp
 + add logging with Winston or Bunyan
++ add [greenkeeper](https://greenkeeper.io)
 + Some more ideas : typescript, [commitizen](https://github.com/commitizen/cz-cli), husky
 
 

@@ -14,7 +14,7 @@ import { schema, resolvers } from './schema';
 
 import db from '../models';
 
-const graphQLServer = express();
+export const graphQLServer = express();
 const GRAPHQL_PORT = config.get('api.port');
 
 mongoose.Promise = Promise;
@@ -23,6 +23,8 @@ mongoose.connect(config.get('mongo.connString'))
 
 graphQLServer.use('/graphql',
   apolloServer(request => {
+    debug(request.headers);
+    debug(`method ${request.method}`);
     const httpConnector = new HttpConnector();
 
     return {
@@ -48,6 +50,8 @@ graphQLServer.use('/graphql',
   })
 );
 
-graphQLServer.listen(GRAPHQL_PORT, () => {
-  debug(`GraphQL Server is now running on http://localhost:${GRAPHQL_PORT}/graphql`);
-});
+if (require.main === module) {
+  graphQLServer.listen(GRAPHQL_PORT, () => {
+    debug(`GraphQL Server is now running on http://localhost:${GRAPHQL_PORT}/graphql`);
+  });
+}

@@ -1,3 +1,4 @@
+const debug = require('debug')('express-graphql-api-boilerplate:gulpfile.babel');
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import path from 'path';
@@ -6,13 +7,19 @@ import runSequence from 'run-sequence';
 import models from './models';
 import config from 'config';
 
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
 const plugins = gulpLoadPlugins();
+debug('Loaded plugins : ', ...Object.keys(plugins));
 
 const paths = {
-  js: ['./**/*.js', '!dist/**', '!node_modules/**', '!coverage/**'],
+  js: [
+    './**/*.js',
+    '!dist/**', '!node_modules/**', '!coverage/**', '!fixtures/**', '!**/*.test.js',
+  ],
   nonJs: ['./package.json', './.gitignore'],
-  tests: './tests/*.js',
+  tests: ['**/*.test.js', '!node_modules/**'],
 };
 
 // Compile ES6 to ES5 and copy to dist
@@ -30,8 +37,15 @@ gulp.task('babel', () =>
     .pipe(gulp.dest('dist'))
 );
 
+
 // Lint Javascript
-gulp.task('lint', () =>
+gulp.task('lint:test', () =>
+  gulp.src(paths.tests)
+    .pipe(plugins.eslint())
+    .pipe(plugins.eslint.format())
+);
+
+gulp.task('lint', ['lint:test'], () =>
   gulp.src(paths.js)
     .pipe(plugins.eslint())
     .pipe(plugins.eslint.format())
@@ -68,7 +82,7 @@ gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
   plugins.nodemon({
     script: path.join('dist', 'api', 'index.js'),
     ext: 'js',
-    ignore: ['node_modules/**/*.js', 'dist/**/*.js'],
+    ignore: ['node_modules/**/*.js', 'dist/**/*.js', '**/*.test.js'],
     tasks: ['lint', 'copy', 'babel'],
     env: {
       NODE_ENV: 'development',
@@ -88,6 +102,44 @@ gulp.task('clean:sqlite', () =>
 
 // gulp serve for development
 gulp.task('serve', ['clean'], () => runSequence('nodemon'));
+
+gulp.task('coverage', ['clean'], () =>
+  gulp.src(paths.js)
+    .pipe(plugins.babelIstanbul())
+    .pipe(plugins.babelIstanbul.hookRequire()) // or you could use .pipe(injectModules())
+);
+
+gulp.task('test:cov', ['coverage'], () => {
+  chai.should();
+  chai.use(chaiAsPromised);
+
+  return gulp.src(paths.tests)
+    .pipe(plugins.babel())
+    .pipe(plugins.injectModules())
+    .pipe(plugins.mocha({
+      reporter: 'spec',
+      globals: {
+        chai,
+      },
+    }))
+    .pipe(plugins.babelIstanbul.writeReports())
+    .pipe(plugins.babelIstanbul.enforceThresholds({ thresholds: { global: 90 } }));
+});
+
+gulp.task('test', ['clean'], () => {
+  chai.should();
+  chai.use(chaiAsPromised);
+
+  return gulp.src(paths.tests)
+    .pipe(plugins.babel())
+    .pipe(plugins.injectModules())
+    .pipe(plugins.mocha({
+      reporter: 'spec',
+      globals: {
+        chai,
+      },
+    }));
+});
 
 // default task: clean dist, compile js files and copy non-js files.
 gulp.task('default', ['clean'], () => {

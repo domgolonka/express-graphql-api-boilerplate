@@ -1,4 +1,4 @@
-const debug = require('debug')('express-graphql-api-boilerplate:api/index');
+const debug = require('debug')('express-graphql-api-boilerplate:models/index');
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
