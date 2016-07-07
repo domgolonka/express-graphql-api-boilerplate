@@ -1,3 +1,4 @@
+const debug = require('debug')('express-graphql-api-boilerplate:api/index');
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
@@ -23,6 +24,7 @@ Object.keys(db).forEach((modelName) => {
   }
 });
 
+debug('Sequelize models initialized');
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

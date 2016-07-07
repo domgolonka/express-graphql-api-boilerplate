@@ -4,6 +4,8 @@ import path from 'path';
 import del from 'del';
 import runSequence from 'run-sequence';
 import models from './models';
+import config from 'config';
+
 
 const plugins = gulpLoadPlugins();
 
@@ -42,14 +44,24 @@ gulp.task('copy', () =>
     .pipe(gulp.dest('dist'))
 );
 
-gulp.task('dev:setup', ['clean', 'clean:db'], () => {
-  return gulp.src('fixtures/**/*', { read: false })
+// Initialize mongoDB with fixtures data
+gulp.task('dev:setup:mongo', () => {
+  gulp.src('fixtures/mongodb/**/*')
+    .pipe(plugins.mongodbData({
+      mongoUrl: config.get('mongo.connString'),
+      dropCollection: true,
+    }));
+});
+// Initialize SQLite with fixtures data
+gulp.task('dev:setup:sequelize', ['clean:sqlite'], () => {
+  return gulp.src('fixtures/sequelize/**/*', { read: false })
     .pipe(plugins.sequelizeTestSetup({
       sequelize: models.sequelize,
       models,
       migrationsPath: 'migrations',
     }));
 });
+gulp.task('dev:setup', ['clean', 'dev:setup:sequelize', 'dev:setup:mongo']);
 
 // Start server with restart on file changes
 gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
@@ -68,7 +80,9 @@ gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
 gulp.task('clean', () =>
   del(['dist/**', 'coverage/**', '!dist', '!coverage'])
 );
-gulp.task('clean:db', () =>
+
+// clean sqlite databases
+gulp.task('clean:sqlite', () =>
   del(['*.sqlite'])
 );
 

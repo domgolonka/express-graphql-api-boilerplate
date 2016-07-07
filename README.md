@@ -5,9 +5,12 @@
 ## Overview
 A boilerplate to kickstart a GraphQL API based on apollostack and express
 
+## Prerequisites
+MongoDB has to be installed
+
 ## Getting started
 
-Initialize database
+Initialize databases SQLite and Mongo with fixtures data
 ```sh
 npm run dev:setup
 ```
@@ -19,6 +22,7 @@ npm run start:d
 # OR
 # without debug logs
 npm start
+
 # then open http://localhost:8080/graphql
 ```
 
@@ -27,8 +31,14 @@ Other gulp tasks:
 # Wipe out dist and coverage directory
 gulp clean
 
-# Wipe out sqlite DB
-gulp clean:db
+# Wipe out SQLite DB
+gulp clean:sqlite
+
+# Wipe out SQLite DB and add fixtures data
+gulp dev:setup:sequelize
+
+# Reset MongoDB with fixtures data
+gulp dev:setup:mongo
 
 # Lint code with ESLint
 gulp lint

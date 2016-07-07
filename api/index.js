@@ -2,6 +2,11 @@ const debug = require('debug')('express-graphql-api-boilerplate:api/index');
 import { apolloServer } from 'apollo-server';
 import config from 'config';
 import express from 'express';
+import mongoose from 'mongoose';
+import Promise from 'bluebird';
+
+
+import { CompanyModel } from './mongo/models';
 
 import { FortuneCookie as FortuneCookieModel } from './http/models';
 import { HttpConnector } from './connectors';
@@ -12,6 +17,9 @@ import db from '../models';
 const graphQLServer = express();
 const GRAPHQL_PORT = config.get('api.port');
 
+mongoose.Promise = Promise;
+mongoose.connect(config.get('mongo.connString'))
+  .then(() => debug('mongo connected'));
 
 graphQLServer.use('/graphql',
   apolloServer(request => {
@@ -30,6 +38,7 @@ graphQLServer.use('/graphql',
         /* Authors: new Authors({ connector: db.authors }),
          Posts: new Posts({ connector: db.posts }),*/
 
+        Companies: CompanyModel,
         Authors: db.authors,
         Posts: db.posts,
         Fortunes: new FortuneCookieModel({ connector: httpConnector }),

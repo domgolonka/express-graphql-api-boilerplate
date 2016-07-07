@@ -16,5 +16,11 @@
       min: 0,
       idle: 10000
     }
+  },
+  mongo: {
+    database: 'dev',
+    host: 'localhost',
+    port: 27017,
+    connString: 'mongodb://localhost/dev',
   }
 }
