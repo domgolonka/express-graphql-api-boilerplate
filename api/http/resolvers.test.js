@@ -1,34 +1,37 @@
-import { tester } from 'graphql-tester';
-import { create as createExpressWrapper } from 'graphql-tester/lib/main/servers/express';
 import mongoose from 'mongoose';
+import { fetch, before as beforeUtil, getToken } from '../../test/utils';
 
-import { graphQLServer } from '../';
-
-
-describe('HttpResolvers', () => {
-  afterEach(() => mongoose.connection.close());
-
-  const graphqlTest = tester({
-    url: '/graphql',
-    server: createExpressWrapper(graphQLServer),
+describe('HttpResolvers', function httpResolversTest() {
+  this.timeout(0);
+  let server;
+  let token;
+  beforeEach((done) => {
+    beforeUtil()
+      .then((listeningServer) => {
+        server = listeningServer;
+        return listeningServer;
+      })
+      .then(getToken.bind(null, 'admin', 'admin'))
+      .then((_token) => {
+        token = _token;
+      })
+      .then(done)
+      .catch(done);
+  });
+  afterEach((done) => {
+    mongoose.connection.close();
+    server.close(done);
   });
 
-  describe('Successfully getting the a fortune', () => {
-    const response = graphqlTest(`{ 
-      fortuneCookie {
-        message
-      }
-    }`);
-
-    it('Returns success and the correct status code', () => {
-      return Promise.all([
-        response.should.eventually.have.property('success').equal(true),
-        response.should.eventually.have.property('status').equal(200),
-      ]);
-    });
-
-    it('Returns a fortune with message', () => {
-      return response.should.eventually.have.deep.property('data.fortuneCookie.message');
-    });
+  it('Successfully get a fortune', (done) => {
+    fetch(server, token, `{ 
+      fortuneCookie { message }
+     }`)
+      .expect(200)
+      .then((res) => {
+        res.body.should.have.deep.property('data.fortuneCookie.message');
+      })
+      .then(done)
+      .catch(done);
   });
 });

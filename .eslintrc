@@ -17,6 +17,7 @@
     "allowImportExportEverywhere": false
   },
   "rules": {
-    "arrow-body-style": 0
+    "arrow-body-style": 0,
+    "no-confusing-arrow": 0
   }
 }

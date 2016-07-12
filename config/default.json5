@@ -2,7 +2,14 @@
   api: {
     port: 8080,
     graphiql: true,
-    pretty: true
+    pretty: true,
+    secret: 'KJHA765azk0',
+  },
+  token: {
+    secret: 'Z3GJW9uPKpe',
+    tokenExpiresIn: '2h',
+    audience: 'mywebsite.com', // identifies the recipients that the JWT is intended for
+    issuer: 'express-graphql-api-boilerplate', // the principal that issued the JWT
   },
   env: "development",
   sequelize: {
@@ -11,11 +18,11 @@
     password: '',
     host: 'localhost',
     dialect: 'sqlite',
-    storage: 'db_dev.sqlite',
+    storage: 'db.dev.sqlite',
     pool: {
       max: 5,
       min: 0,
-      idle: 10000
+      idle: 10000,
     }
   },
   mongo: {

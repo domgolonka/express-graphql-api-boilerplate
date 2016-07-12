@@ -11,7 +11,6 @@ export const resolvers = {
     createAuthor: (root, args, ctx) => {
       return ctx.Authors.create(args);
     },
-    // TODO via token
     createPost: (root, { authorId, tags, title, text }, ctx) => {
       return ctx.Authors.findOne({ where: { id: authorId } })
         .then((author) => {

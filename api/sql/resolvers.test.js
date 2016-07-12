@@ -1,106 +1,79 @@
 /* eslint-disable max-len */
-import { tester } from 'graphql-tester';
-import { create as createExpressWrapper } from 'graphql-tester/lib/main/servers/express';
 import mongoose from 'mongoose';
-
-import { graphQLServer } from '../';
-
+import { fetch, before as beforeUtil, getToken } from '../../test/utils';
 
 describe('SQLResolvers', () => {
-  afterEach(() => mongoose.connection.close());
-
-  const graphqlTest = tester({
-    url: '/graphql',
-    server: createExpressWrapper(graphQLServer),
+  let server;
+  let token;
+  beforeEach((done) => {
+    beforeUtil()
+      .then((listeningServer) => {
+        server = listeningServer;
+        return listeningServer;
+      })
+      .then(getToken.bind(null, 'admin', 'admin'))
+      .then((_token) => {
+        token = _token;
+      })
+      .then(done)
+      .catch(done);
+  });
+  afterEach((done) => {
+    mongoose.connection.close();
+    server.close(done);
   });
 
-  describe('Successfully getting the lastName of Author Maurine', () => {
-    const response = graphqlTest(`{ 
-      author(firstName:"Maurine") {
-        firstName
-        lastName
-      }
-    }`);
 
-    it('Returns success and the correct status code', () => {
-      return Promise.all([
-        response.should.eventually.have.property('success').equal(true),
-        response.should.eventually.have.property('status').equal(200),
-      ]);
-    });
-
-    it('Returns the correct data', () => {
-      return Promise.all([
-        response.should.eventually.have.deep.property('data.author.firstName').equal('Maurine'),
-        response.should.eventually.have.deep.property('data.author.lastName').equal('Rau'),
-      ]);
-    });
+  it('Successfully get the lastName of Author Maurine', (done) => {
+    fetch(server, token, `{ 
+      author(firstName: "Maurine") { firstName lastName }
+     }`)
+      .expect(200)
+      .then((res) => {
+        res.body.should.have.deep.property('data.author.firstName', 'Maurine');
+        res.body.should.have.deep.property('data.author.lastName', 'Rau');
+      })
+      .then(done)
+      .catch(done);
   });
 
-  describe('Successfully add a new author', () => {
-    const resCreateAuthor = graphqlTest(`mutation createToto {
+
+  it('Successfully add a new author', (done) => {
+    fetch(server, token, `mutation createToto {
       createAuthor(firstName: "toto", lastName: "titi") {
-        id
-        firstName
-        lastName
+        id firstName lastName
       }
-    }`);
-    const resAuthorTiti = graphqlTest(`{ 
-      author(firstName: "toto") {
-        id
-        firstName
-        lastName
-      }
-    }`);
-
-    it('Returns success and the correct status code', () => {
-      return Promise.all([
-        resCreateAuthor.should.eventually.have.property('success').equal(true),
-        resCreateAuthor.should.eventually.have.property('status').equal(200),
-        resCreateAuthor.should.eventually.have.property('errors').equal(undefined),
-      ]);
-    });
-
-    it('Returns the correct data', () => {
-      return Promise.all([
-        resCreateAuthor.should.eventually.have.deep.property('data.createAuthor.id'),
-        resCreateAuthor.should.eventually.have.deep.property('data.createAuthor.firstName').equal('toto'),
-        resCreateAuthor.should.eventually.have.deep.property('data.createAuthor.lastName').equal('titi'),
-      ]);
-    });
-
-    it('Then can be fetch', () => {
-      return Promise.all([
-        resAuthorTiti.should.eventually.have.property('success').equal(true),
-        resAuthorTiti.should.eventually.have.property('status').equal(200),
-        resAuthorTiti.should.eventually.have.property('errors').equal(undefined),
-        resAuthorTiti.should.eventually.have.deep.property('data.author.id'),
-        resAuthorTiti.should.eventually.have.deep.property('data.author.firstName').equal('toto'),
-        resAuthorTiti.should.eventually.have.deep.property('data.author.lastName').equal('titi'),
-      ]);
-    });
+    }`)
+      .expect(200)
+      .then((res) => {
+        res.body.should.have.deep.property('data.createAuthor.id');
+        res.body.should.have.deep.property('data.createAuthor.firstName', 'toto');
+        res.body.should.have.deep.property('data.createAuthor.lastName', 'titi');
+      })
+      .then(() => {
+        return fetch(server, token, `{
+          author(firstName: "toto") { id firstName lastName }
+        }`)
+          .expect(200)
+          .then((res) => {
+            res.body.should.have.deep.property('data.author.id');
+            res.body.should.have.deep.property('data.author.firstName', 'toto');
+            res.body.should.have.deep.property('data.author.lastName', 'titi');
+          });
+      })
+      .then(done)
+      .catch(done);
   });
 
-  describe('Successfully getting every authors', () => {
-    const response = graphqlTest(`{ 
-      authors {
-        firstName
-        lastName
-      }
-    }`);
-
-    it('Returns success and the correct status code', () => {
-      return Promise.all([
-        response.should.eventually.have.property('success').equal(true),
-        response.should.eventually.have.property('status').equal(200),
-        response.should.eventually.have.property('errors').equal(undefined),
-      ]);
-    });
-
-    it('Returns the correct number of authors', () => {
-      return Promise.all([
-        response.should.eventually.have.deep.property('data.authors.length').equal(6),
-      ]);
-    });
+  it('Successfully get every authors', (done) => {
+    fetch(server, token, `{ 
+      authors { firstName lastName }
+     }`)
+      .expect(200)
+      .then((res) => {
+        res.body.should.have.deep.property('data.authors.length', 6);
+      })
+      .then(done)
+      .catch(done);
   });
 });

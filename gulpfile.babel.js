@@ -1,4 +1,5 @@
 const debug = require('debug')('express-graphql-api-boilerplate:gulpfile.babel');
+import bcrypt from 'bcrypt';
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import path from 'path';
@@ -58,16 +59,35 @@ gulp.task('copy', () =>
     .pipe(gulp.dest('dist'))
 );
 
+function hashPasswordSync(user) {
+  user.password = bcrypt.hashSync(user.password, 10); // eslint-disable-line no-param-reassign
+  return user;
+}
+
 // Initialize mongoDB with fixtures data
-gulp.task('dev:setup:mongo', () => {
-  gulp.src('fixtures/mongodb/**/*')
+gulp.task('setup:mongo', () => {
+  return gulp.src('fixtures/mongodb/**/*')
+    .pipe(plugins.jsonTransform((data, file) => {
+      if (file.relative === 'users.json') {
+        data = data.map(hashPasswordSync); // eslint-disable-line no-param-reassign
+      }
+      return data;
+    }))
     .pipe(plugins.mongodbData({
       mongoUrl: config.get('mongo.connString'),
       dropCollection: true,
     }));
 });
+// clean sqlite databases
+gulp.task('clean:sqlite', () => {
+  const toRemove = ['*.test.sqlite'];
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+    toRemove.push('*.dev.sqlite');
+  }
+  return del(toRemove);
+});
 // Initialize SQLite with fixtures data
-gulp.task('dev:setup:sequelize', ['clean:sqlite'], () => {
+gulp.task('setup:sequelize', ['clean:sqlite'], () => {
   return gulp.src('fixtures/sequelize/**/*', { read: false })
     .pipe(plugins.sequelizeTestSetup({
       sequelize: models.sequelize,
@@ -75,7 +95,7 @@ gulp.task('dev:setup:sequelize', ['clean:sqlite'], () => {
       migrationsPath: 'migrations',
     }));
 });
-gulp.task('dev:setup', ['clean', 'dev:setup:sequelize', 'dev:setup:mongo']);
+gulp.task('setup', ['clean', 'setup:sequelize', 'setup:mongo']);
 
 // Start server with restart on file changes
 gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
@@ -85,7 +105,7 @@ gulp.task('nodemon', ['lint', 'copy', 'babel'], () =>
     ignore: ['node_modules/**/*.js', 'dist/**/*.js', '**/*.test.js'],
     tasks: ['lint', 'copy', 'babel'],
     env: {
-      NODE_ENV: 'development',
+      NODE_ENV: process.env.NODE_ENV || 'development',
     },
   })
 );
@@ -95,21 +115,16 @@ gulp.task('clean', () =>
   del(['dist/**', 'coverage/**', '!dist', '!coverage'])
 );
 
-// clean sqlite databases
-gulp.task('clean:sqlite', () =>
-  del(['*.sqlite'])
-);
-
 // gulp serve for development
 gulp.task('serve', ['clean'], () => runSequence('nodemon'));
 
-gulp.task('coverage', ['clean'], () =>
+gulp.task('coverage', () =>
   gulp.src(paths.js)
     .pipe(plugins.babelIstanbul())
     .pipe(plugins.babelIstanbul.hookRequire()) // or you could use .pipe(injectModules())
 );
 
-gulp.task('test:cov', ['coverage'], () => {
+gulp.task('test:cov', ['setup', 'coverage'], () => {
   chai.should();
   chai.use(chaiAsPromised);
 
@@ -125,8 +140,7 @@ gulp.task('test:cov', ['coverage'], () => {
     .pipe(plugins.babelIstanbul.writeReports())
     .pipe(plugins.babelIstanbul.enforceThresholds({ thresholds: { global: 90 } }));
 });
-
-gulp.task('test', ['clean'], () => {
+gulp.task('test', ['setup'], () => {
   chai.should();
   chai.use(chaiAsPromised);
 

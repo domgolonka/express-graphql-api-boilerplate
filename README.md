@@ -40,14 +40,16 @@ Other gulp tasks (need gulp globally installed):
 # Wipe out dist and coverage directory
 gulp clean
 
-# Wipe out SQLite DB
+# Wipe out SQLite DBs
+# always delete *.test.sqlite dbs
+# delete *.dev.sqlite if NODE_ENV is not set or is equal to 'development'
 gulp clean:sqlite
 
 # Wipe out SQLite DB and add fixtures data
-gulp dev:setup:sequelize
+gulp setup:sequelize
 
 # Reset MongoDB with fixtures data
-gulp dev:setup:mongo
+gulp setup:mongo
 
 # Lint code with ESLint
 gulp lint
@@ -57,10 +59,17 @@ gulp
 ```
 
 ## TODO
++ scoped authorizations
++ rethink archi by "feature" instead of by connector
++ token refresh & reset password
++ split gulp configs in several files
 + add CONTRIBUTING.md
-+ add security : jwt helmet nsp
++ add security : helmet, nsp, [do not use bodyParser](http://andrewkelley.me/post/do-not-use-bodyparser-with-express-js.html)
 + add logging with Winston or Bunyan
+    e.g. http://aleksandrov.ws/2013/09/12/restful-api-with-nodejs-plus-mongodb/#a-namestep2a2-error-handling
 + add [greenkeeper](https://greenkeeper.io)
++ add auth from Linkedin etc.
+
 + Some more ideas : typescript, [commitizen](https://github.com/commitizen/cz-cli), husky
 
 

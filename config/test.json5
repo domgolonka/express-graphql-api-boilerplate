@@ -1,0 +1,14 @@
+{
+  api: {
+    port: 8081
+  },
+  env: "test",
+  sequelize: {
+    database: 'database_test',
+    storage: 'db.test.sqlite',
+  },
+  mongo: {
+    database: 'test',
+    connString: 'mongodb://localhost/test',
+  }
+}
