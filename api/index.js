@@ -93,6 +93,7 @@ app.use('/graphql',
          Posts: new Posts({ connector: db.posts }),*/
 
         Companies: CompanyModel,
+        Users: UserModel,
         Authors: db.authors,
         Posts: db.posts,
         Fortunes: new FortuneCookieModel({ connector: httpConnector }),

@@ -60,7 +60,6 @@ gulp
 
 ## TODO
 + scoped authorizations
-+ rethink archi by "feature" instead of by connector
 + token refresh & reset password
 + split gulp configs in several files
 + add CONTRIBUTING.md
@@ -69,6 +68,7 @@ gulp
     e.g. http://aleksandrov.ws/2013/09/12/restful-api-with-nodejs-plus-mongodb/#a-namestep2a2-error-handling
 + add [greenkeeper](https://greenkeeper.io)
 + add auth from Linkedin etc.
++ think about move SQL models from /models to /api/RESOURCE_NAME/models.js
 
 + Some more ideas : typescript, [commitizen](https://github.com/commitizen/cz-cli), husky
 
