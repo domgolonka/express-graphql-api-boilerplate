@@ -4,5 +4,3 @@ type FortuneCookie {
   message: String
 }
 `];
-
-export * from './resolvers';

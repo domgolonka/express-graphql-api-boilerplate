@@ -1,7 +1,8 @@
 import { merge } from 'lodash';
-import { schema as sqlSchema, resolvers as sqlResolvers } from './sql/schema';
-import { schema as httpSchema, resolvers as httpResolvers } from './http/schema';
-import { schema as mongoSchema, resolvers as mongoResolvers } from './mongo/schema';
+import { schema as AuthorsSchema, resolvers as AuthorsResolvers } from './Authors';
+import { schema as PostsSchema, resolvers as PostsResolvers } from './Posts';
+import { schema as FortunesSchema, resolvers as FortunesResolvers } from './Fortunes';
+import { schema as CompanySchema, resolvers as CompanyResolvers } from './Companies';
 
 const rootSchema = [`
 type Query {
@@ -37,5 +38,16 @@ schema {
 }
 `];
 
-export const schema = [...rootSchema, ...sqlSchema, ...httpSchema, ...mongoSchema];
-export const resolvers = merge(sqlResolvers, httpResolvers, mongoResolvers);
+export const schema = [
+  ...rootSchema,
+  ...AuthorsSchema,
+  ...CompanySchema,
+  ...FortunesSchema,
+  ...PostsSchema,
+];
+export const resolvers = merge(
+  AuthorsResolvers,
+  PostsResolvers,
+  FortunesResolvers,
+  CompanyResolvers
+);

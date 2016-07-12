@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 import { fetch, before as beforeUtil, getToken } from '../../test/utils';
 
-describe('MongoResolvers', () => {
+describe('Company', () => {
   let server;
   let token;
   beforeEach((done) => {

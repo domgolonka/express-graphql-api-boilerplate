@@ -11,5 +11,3 @@ type JobOffer {
   description: String
 }
 `];
-
-export * from './resolvers';

@@ -12,10 +12,13 @@ import logger from 'morgan';
 
 import passport, { authenticate } from './auth';
 import { HttpConnector } from './connectors';
-import { FortuneCookie as FortuneCookieModel } from './http/models';
-import { UserModel as User, CompanyModel } from './mongo/models';
 import db from '../models';
 import { schema, resolvers } from './schema';
+
+import { CompanyModel } from './Companies';
+import { FortuneCookieModel } from './Fortunes';
+import { UserModel } from './Users';
+
 
 jwt.sign = Promise.promisify(jwt.sign);
 
@@ -35,7 +38,7 @@ app.use(passport.initialize());
 
 
 app.post('/login', function (req, res) {
-  User.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] })
+  UserModel.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] })
     .then((user) => {
       if (!user) return Promise.reject(new Error('user not found'));
 
@@ -70,7 +73,7 @@ app.get('/profile',
 
 app.use(bodyParser.text({ type: 'application/graphql' }));
 app.use('/graphql',
-  authenticate,
+  // authenticate,
   apolloServer(request => {
     debug(request.headers);
     debug(`method ${request.method}`);

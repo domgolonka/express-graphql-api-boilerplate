@@ -2,16 +2,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
-const CompanySchema = mongoose.Schema({
-  siren: String,
-  siret: String,
-  naf: String,
-  description: String,
-  jobOffers: [{
-    title: String,
-    description: String,
-  }],
-});
 const UserSchema = mongoose.Schema({
   username: { type: String, required: true, index: { unique: true } },
   email: { type: String, required: true },
@@ -49,5 +39,4 @@ UserSchema.methods.comparePassword = function comparePassword(password) {
   });
 };
 
-export const CompanyModel = mongoose.model('companies', CompanySchema);
 export const UserModel = mongoose.model('users', UserSchema);

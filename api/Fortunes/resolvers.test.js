@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { fetch, before as beforeUtil, getToken } from '../../test/utils';
 
-describe('HttpResolvers', function httpResolversTest() {
+describe('Fortune cookies', function FortuneCookiesTest () {
   this.timeout(0);
   let server;
   let token;

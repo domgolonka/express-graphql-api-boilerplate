@@ -1,10 +1,4 @@
 export const schema = [`
-type Author {
-  id: String!
-  firstName: String
-  lastName: String
-  posts: [Post]
-}
 type Post {
   id: String!
   title: String
@@ -13,5 +7,3 @@ type Post {
   author: Author
 }
 `];
-
-export * from './resolvers';

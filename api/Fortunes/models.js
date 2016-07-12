@@ -1,4 +1,4 @@
-export class FortuneCookie {
+export class FortuneCookieModel {
   constructor({ connector }) {
     this.connector = connector;
   }

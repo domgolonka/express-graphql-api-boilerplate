@@ -2,7 +2,7 @@ import config from 'config';
 import passport from 'passport';
 import passportJWT from 'passport-jwt';
 
-import { UserModel as User } from './mongo/models';
+import { UserModel } from './Users';
 
 const ExtractJwt = passportJWT.ExtractJwt;
 const Strategy = passportJWT.Strategy;
@@ -14,7 +14,7 @@ const opts = {
 };
 
 passport.use(new Strategy(opts, (jwtPayload, done) => {
-  User.findById(jwtPayload.id, '-password')
+  UserModel.findById(jwtPayload.id, '-password')
     .then((user) => user ? done(null, user) : done(null, false))
     .catch(done);
 }));
